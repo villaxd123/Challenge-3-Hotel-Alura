@@ -1,23 +1,13 @@
 package com.hotelalura.views;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import java.awt.Color;
 import com.toedter.calendar.JDateChooser;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.ImageIcon;
-import java.awt.SystemColor;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import javax.swing.SwingConstants;
-import javax.swing.JSeparator;
 
 public class RegistroHuesped extends JFrame {
 
