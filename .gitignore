@@ -12,6 +12,9 @@ target/
 *.iml
 *.ipr
 
+### Tests ###
+/src/main/java/com/hotelalura/tests/
+
 ### Eclipse ###
 .apt_generated
 .classpath
