@@ -21,8 +21,7 @@ public class MenuPrincipal extends JFrame {
                 MenuPrincipal frame = new MenuPrincipal();
                 frame.setVisible(true);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-//                    e.printStackTrace();
+                JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
             }
         });
     }

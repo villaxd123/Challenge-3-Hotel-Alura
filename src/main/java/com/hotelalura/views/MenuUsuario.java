@@ -23,8 +23,7 @@ public class MenuUsuario extends JFrame {
                 MenuUsuario frame = new MenuUsuario();
                 frame.setVisible(true);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-//                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
             }
         });
     }
