@@ -17,4 +17,16 @@ public class ClienteController {
     public List<Cliente> listar() {
         return clienteDAO.listar();
     }
+
+    public void editar(Integer id, String nombre, String apellido, String fechaNacimiento, String nacionalidad, Integer celular, Integer idReserva) {
+        clienteDAO.editar(id, nombre, apellido, fechaNacimiento, nacionalidad, celular, idReserva);
+    }
+
+    public void guardar(String nombre, String apellido, String fechaNacimiento, String nacionalidad, Integer celular, Integer reservaId) {
+        clienteDAO.guardar(nombre, apellido, fechaNacimiento, nacionalidad, celular, reservaId);
+    }
+
+    public void close() {
+        clienteDAO.close();
+    }
 }
