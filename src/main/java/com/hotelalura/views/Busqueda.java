@@ -2,6 +2,7 @@ package com.hotelalura.views;
 
 import com.hotelalura.controller.ClienteController;
 import com.hotelalura.controller.ReservaController;
+import com.hotelalura.util.CheckStringInteger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,6 +19,8 @@ public class Busqueda extends JFrame {
     int xMouse, yMouse;
     private final ClienteController clienteController;
     private final ReservaController reservaController;
+    private JTable tablaReservas, tablaClientes;
+    private DefaultTableModel modelReservas, modelClientes;
 
     /**
      * Launch the application.
@@ -165,7 +168,21 @@ public class Busqueda extends JFrame {
         btnBuscar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO Buscar algo...
+                String buscarText = txtBuscar.getText();
+                if (buscarText != null) {
+                    if (new CheckStringInteger().verify(buscarText)) {
+                        // TODO Llamar al método de buscar por # de reserva.
+                    } else {
+                        // TODO Llamar al método de buscar por apellido.
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "No ha escrito nada para buscar",
+                            "No se pudo buscar",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                }
             }
         });
         btnBuscar.setLayout(null);
@@ -185,7 +202,29 @@ public class Busqueda extends JFrame {
         btnEditar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO Editar datos del Cliente o la Reserva
+                if (panel.getSelectedIndex() == 0) {
+                    Integer id = Integer.valueOf(tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 0).toString());
+                    String fechaIn = (String) tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 1);
+                    String fechaOut = (String) tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 2);
+                    Double valor = Double.valueOf(tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 3).toString());
+                    String tipoPago = (String) tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 4);
+                    reservaController.editar(id, fechaIn, fechaOut, valor, tipoPago);
+
+                    limpiarTabla(modelReservas, "Reservas");
+                    cargarReservas(modelReservas);
+                } else if (panel.getSelectedIndex() == 1) {
+                    Integer id = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 0).toString());
+                    String nombre = (String) tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 1);
+                    String apellido = (String) tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 2);
+                    String fechaNacimiento = (String) tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 3);
+                    String nacionalidad = (String) tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 4);
+                    Integer celular = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 5).toString());
+                    Integer idReserva = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 6).toString());
+                    clienteController.editar(id, nombre, apellido, fechaNacimiento, nacionalidad, celular, idReserva);
+
+                    limpiarTabla(modelClientes, "Clientes");
+                    cargarClientes(modelClientes);
+                }
             }
         });
         btnEditar.setLayout(null);
@@ -244,35 +283,33 @@ public class Busqueda extends JFrame {
     }
 
     private JScrollPane getTableReservas() {
-        JTable tbReservas = new JTable();
-        tbReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tbReservas.setFont(new Font("Roboto", Font.PLAIN, 16));
-        DefaultTableModel modelo = (DefaultTableModel) tbReservas.getModel();
-        modelo.addColumn("Numero de Reserva");
-        modelo.addColumn("Fecha Check In");
-        modelo.addColumn("Fecha Check Out");
-        modelo.addColumn("Valor");
-        modelo.addColumn("Forma de Pago");
-        this.cargarReservas(modelo);
-        System.out.println("Se agregó la lista de Reservas.");
-        return new JScrollPane(tbReservas);
+        tablaReservas = new JTable();
+        tablaReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tablaReservas.setFont(new Font("Roboto", Font.PLAIN, 16));
+        modelReservas = (DefaultTableModel) tablaReservas.getModel();
+        modelReservas.addColumn("Numero de Reserva");
+        modelReservas.addColumn("Fecha Check In");
+        modelReservas.addColumn("Fecha Check Out");
+        modelReservas.addColumn("Valor");
+        modelReservas.addColumn("Forma de Pago");
+        this.cargarReservas(modelReservas);
+        return new JScrollPane(tablaReservas);
     }
 
     private JScrollPane getTableHospedados() {
-        JTable tbHospedados = new JTable();
-        tbHospedados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tbHospedados.setFont(new Font("Roboto", Font.PLAIN, 16));
-        DefaultTableModel modeloHospedaje = (DefaultTableModel) tbHospedados.getModel();
-        modeloHospedaje.addColumn("Número de Huésped");
-        modeloHospedaje.addColumn("Nombre");
-        modeloHospedaje.addColumn("Apellido");
-        modeloHospedaje.addColumn("Fecha de Nacimiento");
-        modeloHospedaje.addColumn("País");
-        modeloHospedaje.addColumn("Teléfono");
-        modeloHospedaje.addColumn("Número de Reserva");
-        this.cargarClientes(modeloHospedaje);
-        System.out.println("Se agregó la lista de Clientes.");
-        return new JScrollPane(tbHospedados);
+        tablaClientes = new JTable();
+        tablaClientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tablaClientes.setFont(new Font("Roboto", Font.PLAIN, 16));
+        modelClientes = (DefaultTableModel) tablaClientes.getModel();
+        modelClientes.addColumn("Número de Huésped");
+        modelClientes.addColumn("Nombre");
+        modelClientes.addColumn("Apellido");
+        modelClientes.addColumn("Fecha de Nacimiento");
+        modelClientes.addColumn("País");
+        modelClientes.addColumn("Teléfono");
+        modelClientes.addColumn("Número de Reserva");
+        this.cargarClientes(modelClientes);
+        return new JScrollPane(tablaClientes);
     }
 
     //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
@@ -313,5 +350,10 @@ public class Busqueda extends JFrame {
                         reserva.getFormaPago()
                 }
         ));
+    }
+
+    private void limpiarTabla(DefaultTableModel tableModel, String nombreTabla) {
+        tableModel.getDataVector().clear();
+        System.out.println("Limpiando tabla: " + nombreTabla);
     }
 }
