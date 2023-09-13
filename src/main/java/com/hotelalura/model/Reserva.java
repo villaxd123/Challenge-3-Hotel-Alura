@@ -2,10 +2,8 @@ package com.hotelalura.model;
 
 public class Reserva {
     private Integer id;
-    private String fechaEntrada;
-    private String fechaSalida;
+    private String fechaEntrada, fechaSalida, formaPago;
     private Double valor;
-    private String formaPago;
 
     public Reserva(Integer id, String fechaEntrada, String fechaSalida, Double valor, String formaPago) {
         this.id = id;

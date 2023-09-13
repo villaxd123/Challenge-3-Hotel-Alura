@@ -2,12 +2,8 @@ package com.hotelalura.model;
 
 public class Cliente {
     private Integer id;
-    private String nombre;
-    private String apellido;
-    private String fechaNacimiento;
-    private String nacionalidad;
-    private Integer celular;
-    private Integer reservaId;
+    private String nombre, apellido, fechaNacimiento, nacionalidad;
+    private Integer celular, reservaId;
 
     public Cliente(Integer id, String nombre, String apellido, String fechaNacimiento, String nacionalidad, Integer celular, Integer reservaId) {
         this.id = id;
