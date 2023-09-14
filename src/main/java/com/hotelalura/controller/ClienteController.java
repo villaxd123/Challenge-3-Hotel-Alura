@@ -26,6 +26,22 @@ public class ClienteController {
         clienteDAO.guardar(nombre, apellido, fechaNacimiento, nacionalidad, celular, reservaId);
     }
 
+    public List<Cliente> buscarReserva(Integer idReserva) {
+        return clienteDAO.buscarReserva(idReserva);
+    }
+
+    public List<Cliente> buscarApellido(String apellido) {
+        return clienteDAO.buscarApellido(apellido);
+    }
+
+    public void eliminarReserva(Integer idReserva) {
+        clienteDAO.eliminarReserva(idReserva);
+    }
+
+    public void eliminarCliente(Integer idCliente) {
+        clienteDAO.eliminarCliente(idCliente);
+    }
+
     public void close() {
         clienteDAO.close();
     }
