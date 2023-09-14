@@ -2,6 +2,7 @@ package com.hotelalura.dao;
 
 import com.hotelalura.model.Cliente;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,10 +37,74 @@ public class ClienteDAO {
                             resultSet.getInt("reserva_id")
                     ));
                 }
+                resultSet.close();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return listaClientes;
+    }
+
+    public void editar(Integer id, String nombre, String apellido, String fechaNacimiento, String nacionalidad, Integer celular, Integer idReserva) {
+        try {
+            final PreparedStatement queryUpdate = connection.prepareStatement(
+                    "UPDATE cliente SET " +
+                            "nombre = ?, " +
+                            "apellido = ?, " +
+                            "fecha_nacimiento = ?, " +
+                            "nacionalidad = ?, " +
+                            "celular = ?, " +
+                            "reserva_id = ? " +
+                            "WHERE id = ?"
+            );
+            try (queryUpdate) {
+                queryUpdate.setString(1, nombre);
+                queryUpdate.setString(2, apellido);
+                queryUpdate.setString(3, fechaNacimiento);
+                queryUpdate.setString(4, nacionalidad);
+                queryUpdate.setInt(5, celular);
+                queryUpdate.setInt(6, idReserva);
+                queryUpdate.setInt(7, id);
+                queryUpdate.execute();
+
+                JOptionPane.showMessageDialog(null, "Huésped modificado con éxito.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, String.format("Error: %s", e.getMessage()));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void guardar(String nombre, String apellido, String fechaNacimiento, String nacionalidad, Integer celular, Integer reservaId) {
+        try {
+            PreparedStatement queryInsert = connection.prepareStatement(
+                    "INSERT INTO cliente" +
+                            "(nombre, apellido, fecha_nacimiento, nacionalidad, celular, reserva_id) " +
+                            "VALUES (?, ?, ?, ?, ?, ?)"
+            );
+            try (queryInsert){
+                queryInsert.setString(1, nombre);
+                queryInsert.setString(2, apellido);
+                queryInsert.setString(3, fechaNacimiento);
+                queryInsert.setString(4, nacionalidad);
+                queryInsert.setInt(5, celular);
+                queryInsert.setInt(6, reservaId);
+                queryInsert.execute();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, String.format("Error: %s", e.getMessage()));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void close() {
+        try {
+            this.connection.close();
+            System.out.println("ClienteDAO cerró su conexión a la base de datos");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(),JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
