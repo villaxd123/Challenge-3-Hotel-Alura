@@ -96,12 +96,54 @@ public class ReservaDAO {
         }
     }
 
+    public List<Reserva> buscar(Integer id) {
+        List<Reserva> listaReservas = new ArrayList<>();
+        try {
+            PreparedStatement querySearch = connection.prepareStatement(
+                    "SELECT id, fecha_entrada, fecha_salida, valor, forma_de_pago " +
+                            "FROM reserva WHERE id = ?"
+            );
+            try (querySearch) {
+                querySearch.setInt(1, id);
+                querySearch.execute();
+                ResultSet resultSet = querySearch.getResultSet();
+                while (resultSet.next()) {
+                    listaReservas.add(new Reserva(
+                            resultSet.getInt("id"),
+                            resultSet.getString("fecha_entrada"),
+                            resultSet.getString("fecha_salida"),
+                            resultSet.getDouble("valor"),
+                            resultSet.getString("forma_de_pago")
+                    ));
+                }
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return listaReservas;
+    }
+
+    public void eliminar(Integer id) {
+        try {
+            PreparedStatement queryDelete = connection.prepareStatement(
+                    "DELETE FROM reserva WHERE id = ?"
+            );
+            try (queryDelete) {
+                queryDelete.setInt(1, id);
+                queryDelete.execute();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void close() {
         try {
             this.connection.close();
             System.out.println("ReservaDAO cerró su conexión a la base de datos");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(),JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
         }
     }
 
