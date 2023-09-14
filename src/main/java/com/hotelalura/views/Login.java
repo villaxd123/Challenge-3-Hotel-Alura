@@ -1,11 +1,10 @@
 package com.hotelalura.views;
 
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.io.Serial;
 
 public class Login extends JFrame {
@@ -29,8 +28,7 @@ public class Login extends JFrame {
                 Login frame = new Login();
                 frame.setVisible(true);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-//                    e.printStackTrace();
+                JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -101,16 +99,20 @@ public class Login extends JFrame {
         labelExit.setHorizontalAlignment(SwingConstants.CENTER);
 
         txtUsuario = new JTextField();
-        txtUsuario.addMouseListener(new MouseAdapter() {
+        txtUsuario.addFocusListener(new FocusAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void focusGained(FocusEvent event) {
                 if (txtUsuario.getText().equals("Ingrese su nombre de usuario")) {
                     txtUsuario.setText("");
                     txtUsuario.setForeground(Color.black);
                 }
-                if (String.valueOf(txtPass.getPassword()).isEmpty()) {
-                    txtPass.setText("********");
-                    txtPass.setForeground(Color.gray);
+            }
+
+            @Override
+            public void focusLost(FocusEvent event) {
+                if (txtUsuario.getText().isEmpty()) {
+                    txtUsuario.setText("Ingrese su nombre de usuario");
+                    txtUsuario.setForeground(Color.gray);
                 }
             }
         });
@@ -140,16 +142,20 @@ public class Login extends JFrame {
 
         txtPass = new JPasswordField();
         txtPass.setText("********");
-        txtPass.addMouseListener(new MouseAdapter() {
+        txtPass.addFocusListener(new FocusAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void focusGained(FocusEvent event) {
                 if (String.valueOf(txtPass.getPassword()).equals("********")) {
                     txtPass.setText("");
                     txtPass.setForeground(Color.black);
                 }
-                if (txtUsuario.getText().isEmpty()) {
-                    txtUsuario.setText("Ingrese su nombre de usuario");
-                    txtUsuario.setForeground(Color.gray);
+            }
+
+            @Override
+            public void focusLost(FocusEvent event) {
+                if (String.valueOf(txtPass.getPassword()).isEmpty()) {
+                    txtPass.setText("********");
+                    txtPass.setForeground(Color.gray);
                 }
             }
         });
