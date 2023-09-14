@@ -31,6 +31,14 @@ public class ReservaController {
         return value;
     }
 
+    public List<Reserva> buscar(Integer id) {
+        return reservaDAO.buscar(id);
+    }
+
+    public void eliminar(Integer id) {
+        reservaDAO.eliminar(id);
+    }
+
     public void close() {
         reservaDAO.close();
     }
