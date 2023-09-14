@@ -2,6 +2,8 @@ package com.hotelalura.views;
 
 import com.hotelalura.controller.ClienteController;
 import com.hotelalura.controller.ReservaController;
+import com.hotelalura.model.Cliente;
+import com.hotelalura.model.Reserva;
 import com.hotelalura.util.CheckStringInteger;
 
 import javax.swing.*;
@@ -11,6 +13,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.List;
 
 public class Busqueda extends JFrame {
 
@@ -31,8 +34,7 @@ public class Busqueda extends JFrame {
                 Busqueda frame = new Busqueda();
                 frame.setVisible(true);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-//                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -56,7 +58,7 @@ public class Busqueda extends JFrame {
         setLocationRelativeTo(null);
         setUndecorated(true);
 
-        JTextField txtBuscar = new JTextField();
+        JTextField txtBuscar = new JTextField(" ");
         txtBuscar.setBounds(536, 127, 193, 31);
         txtBuscar.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         contentPane.add(txtBuscar);
@@ -99,6 +101,8 @@ public class Busqueda extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 MenuUsuario usuario = new MenuUsuario();
                 usuario.setVisible(true);
+                reservaController.close();
+                clienteController.close();
                 dispose();
             }
 
@@ -131,6 +135,8 @@ public class Busqueda extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 MenuUsuario usuario = new MenuUsuario();
                 usuario.setVisible(true);
+                reservaController.close();
+                clienteController.close();
                 dispose();
             }
 
@@ -168,20 +174,19 @@ public class Busqueda extends JFrame {
         btnBuscar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String buscarText = txtBuscar.getText();
-                if (buscarText != null) {
+                String buscarText = txtBuscar.getText().trim();
+                if (!buscarText.isEmpty()) {
                     if (new CheckStringInteger().verify(buscarText)) {
-                        // TODO Llamar al método de buscar por # de reserva.
+                        Integer idReserva = Integer.valueOf(buscarText);
+                        cargarSearchReserva(reservaController.buscar(idReserva), clienteController.buscarReserva(idReserva));
                     } else {
-                        // TODO Llamar al método de buscar por apellido.
+                        cargarSearchCliente(clienteController.buscarApellido(buscarText));
                     }
                 } else {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "No ha escrito nada para buscar",
-                            "No se pudo buscar",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
+                    limpiarTabla(modelReservas, "Reservas");
+                    limpiarTabla(modelClientes, "Clientes");
+                    cargarReservas(modelReservas);
+                    cargarClientes(modelClientes);
                 }
             }
         });
@@ -244,7 +249,34 @@ public class Busqueda extends JFrame {
         btnEliminar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO Eliminar Reserva del Cliente
+                if (panel.getSelectedIndex() == 0) {
+                    Integer idReserva = Integer.valueOf(tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 0).toString());
+
+                    reservaController.eliminar(idReserva);
+                    limpiarTabla(modelReservas, "Reservas");
+                    cargarReservas(modelReservas);
+
+                    clienteController.eliminarReserva(idReserva);
+                    limpiarTabla(modelClientes, "Clientes");
+                    cargarClientes(modelClientes);
+                } else if (panel.getSelectedIndex() == 1) {
+                    Integer idCliente = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 0).toString());
+                    Integer idReserva = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 6).toString());
+
+                    clienteController.eliminarCliente(idCliente);
+                    limpiarTabla(modelClientes, "Clientes");
+                    cargarClientes(modelClientes);
+
+                    reservaController.eliminar(idReserva);
+                    limpiarTabla(modelReservas, "Reservas");
+                    cargarReservas(modelReservas);
+                }
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Eliminación completada",
+                        "Acción completada.",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             }
         });
         btnEliminar.setLayout(null);
@@ -352,8 +384,79 @@ public class Busqueda extends JFrame {
         ));
     }
 
+    private void cargarSearchReserva(List<Reserva> reservas, List<Cliente> clientes) {
+        if (reservas.isEmpty() && clientes.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se encontró una reserva con ese número.",
+                    "Reserva no encontrada.",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } else {
+            limpiarTabla(modelReservas, "Reservas");
+            reservas.forEach(reserva -> this.modelReservas.addRow(
+                    new Object[]{
+                            reserva.getId(),
+                            reserva.getFechaEntrada(),
+                            reserva.getFechaSalida(),
+                            reserva.getValor(),
+                            reserva.getFormaPago()
+                    }
+            ));
+            limpiarTabla(modelClientes, "Clientes");
+            clientes.forEach(cliente -> this.modelClientes.addRow(
+                    new Object[]{
+                            cliente.getId(),
+                            cliente.getNombre(),
+                            cliente.getApellido(),
+                            cliente.getFechaNacimiento(),
+                            cliente.getNacionalidad(),
+                            cliente.getCelular(),
+                            cliente.getReservaId()
+                    }
+            ));
+        }
+    }
+
+    private void cargarSearchCliente(List<Cliente> clientes) {
+        if (clientes.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se encontró un cliente con ese apellido.",
+                    "Cliente no encontrado.",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } else {
+            limpiarTabla(modelClientes, "Clientes");
+            limpiarTabla(modelReservas, "Reservas");
+            clientes.forEach(cliente -> this.modelClientes.addRow(
+                    new Object[]{
+                            cliente.getId(),
+                            cliente.getNombre(),
+                            cliente.getApellido(),
+                            cliente.getFechaNacimiento(),
+                            cliente.getNacionalidad(),
+                            cliente.getCelular(),
+                            cliente.getReservaId()
+                    }
+            ));
+            clientes.forEach(cliente -> reservaController
+                    .buscar(cliente.getReservaId()).forEach(reserva -> this.modelReservas.addRow(
+                            new Object[]{
+                                    reserva.getId(),
+                                    reserva.getFechaEntrada(),
+                                    reserva.getFechaSalida(),
+                                    reserva.getValor(),
+                                    reserva.getFormaPago()
+                            }
+                    ))
+            );
+        }
+    }
+
     private void limpiarTabla(DefaultTableModel tableModel, String nombreTabla) {
         tableModel.getDataVector().clear();
         System.out.println("Limpiando tabla: " + nombreTabla);
     }
+
 }
