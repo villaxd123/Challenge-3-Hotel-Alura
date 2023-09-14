@@ -183,8 +183,8 @@ public class Busqueda extends JFrame {
                         cargarSearchCliente(clienteController.buscarApellido(buscarText));
                     }
                 } else {
-                    limpiarTabla(modelReservas, "Reservas");
-                    limpiarTabla(modelClientes, "Clientes");
+                    limpiarTabla(modelReservas);
+                    limpiarTabla(modelClientes);
                     cargarReservas(modelReservas);
                     cargarClientes(modelClientes);
                 }
@@ -215,7 +215,7 @@ public class Busqueda extends JFrame {
                     String tipoPago = (String) tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 4);
                     reservaController.editar(id, fechaIn, fechaOut, valor, tipoPago);
 
-                    limpiarTabla(modelReservas, "Reservas");
+                    limpiarTabla(modelReservas);
                     cargarReservas(modelReservas);
                 } else if (panel.getSelectedIndex() == 1) {
                     Integer id = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 0).toString());
@@ -227,7 +227,7 @@ public class Busqueda extends JFrame {
                     Integer idReserva = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 6).toString());
                     clienteController.editar(id, nombre, apellido, fechaNacimiento, nacionalidad, celular, idReserva);
 
-                    limpiarTabla(modelClientes, "Clientes");
+                    limpiarTabla(modelClientes);
                     cargarClientes(modelClientes);
                 }
             }
@@ -253,22 +253,22 @@ public class Busqueda extends JFrame {
                     Integer idReserva = Integer.valueOf(tablaReservas.getModel().getValueAt(tablaReservas.getSelectedRow(), 0).toString());
 
                     reservaController.eliminar(idReserva);
-                    limpiarTabla(modelReservas, "Reservas");
+                    limpiarTabla(modelReservas);
                     cargarReservas(modelReservas);
 
                     clienteController.eliminarReserva(idReserva);
-                    limpiarTabla(modelClientes, "Clientes");
+                    limpiarTabla(modelClientes);
                     cargarClientes(modelClientes);
                 } else if (panel.getSelectedIndex() == 1) {
                     Integer idCliente = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 0).toString());
                     Integer idReserva = Integer.valueOf(tablaClientes.getModel().getValueAt(tablaClientes.getSelectedRow(), 6).toString());
 
                     clienteController.eliminarCliente(idCliente);
-                    limpiarTabla(modelClientes, "Clientes");
+                    limpiarTabla(modelClientes);
                     cargarClientes(modelClientes);
 
                     reservaController.eliminar(idReserva);
-                    limpiarTabla(modelReservas, "Reservas");
+                    limpiarTabla(modelReservas);
                     cargarReservas(modelReservas);
                 }
                 JOptionPane.showMessageDialog(
@@ -393,7 +393,7 @@ public class Busqueda extends JFrame {
                     JOptionPane.INFORMATION_MESSAGE
             );
         } else {
-            limpiarTabla(modelReservas, "Reservas");
+            limpiarTabla(modelReservas);
             reservas.forEach(reserva -> this.modelReservas.addRow(
                     new Object[]{
                             reserva.getId(),
@@ -403,7 +403,7 @@ public class Busqueda extends JFrame {
                             reserva.getFormaPago()
                     }
             ));
-            limpiarTabla(modelClientes, "Clientes");
+            limpiarTabla(modelClientes);
             clientes.forEach(cliente -> this.modelClientes.addRow(
                     new Object[]{
                             cliente.getId(),
@@ -427,8 +427,8 @@ public class Busqueda extends JFrame {
                     JOptionPane.INFORMATION_MESSAGE
             );
         } else {
-            limpiarTabla(modelClientes, "Clientes");
-            limpiarTabla(modelReservas, "Reservas");
+            limpiarTabla(modelClientes);
+            limpiarTabla(modelReservas);
             clientes.forEach(cliente -> this.modelClientes.addRow(
                     new Object[]{
                             cliente.getId(),
@@ -454,9 +454,8 @@ public class Busqueda extends JFrame {
         }
     }
 
-    private void limpiarTabla(DefaultTableModel tableModel, String nombreTabla) {
+    private void limpiarTabla(DefaultTableModel tableModel) {
         tableModel.getDataVector().clear();
-        System.out.println("Limpiando tabla: " + nombreTabla);
     }
 
 }

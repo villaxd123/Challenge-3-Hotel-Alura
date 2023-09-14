@@ -63,7 +63,6 @@ public class Login extends JFrame {
         JLabel imgHotel = new JLabel("");
         imgHotel.setBounds(0, 0, 304, 538);
         panel_1.add(imgHotel);
-        System.out.println();
         imgHotel.setIcon(new ImageIcon("src/main/java/com/hotelalura/assets/img-hotel-login-.png"));
 
         JPanel btnExit = new JPanel();

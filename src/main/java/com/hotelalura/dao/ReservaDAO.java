@@ -141,7 +141,6 @@ public class ReservaDAO {
     public void close() {
         try {
             this.connection.close();
-            System.out.println("ReservaDAO cerró su conexión a la base de datos");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
         }
